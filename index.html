@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Inscrição – Instituto ALFA</title>
+  <meta name="description" content="Formulário de inscrição" />
+
+  <style>
+    :root{
+      --bg:#f6f7fb;
+      --card:#ffffff;
+      --text:#1f2328;
+      --muted:#6b7280;
+      --line:#e5e7eb;
+      --brand:#1a73e8;   /* lembra Google */
+      --danger:#d93025;  /* erro */
+      --radius:14px;
+      --shadow:0 18px 45px rgba(0,0,0,.08);
+      --font: system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Helvetica Neue", sans-serif;
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family:var(--font);
+      background: radial-gradient(1000px 500px at 20% 0%, rgba(26,115,232,.10), transparent 60%),
+                  radial-gradient(900px 500px at 90% 10%, rgba(217,48,37,.06), transparent 55%),
+                  var(--bg);
+      color:var(--text);
+    }
+
+    .wrap{
+      max-width:820px;
+      margin: 36px auto;
+      padding: 0 16px 40px;
+    }
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+
+    .hero{
+      border-top:10px solid var(--brand);
+      padding:22px 22px 16px;
+    }
+
+    h1{
+      margin:0 0 6px;
+      font-size: 22px;
+      line-height:1.25;
+      font-weight: 750;
+      letter-spacing: -0.2px;
+    }
+
+    .sub{
+      margin:0;
+      color:var(--muted);
+      font-size: 14px;
+      line-height:1.5;
+    }
+
+    .req{
+      margin-top:12px;
+      font-size: 12px;
+      color:var(--muted);
+    }
+
+    .gallery{
+      display:grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap:10px;
+      padding: 14px 22px 4px;
+    }
+
+    .ph{
+      aspect-ratio: 4/3;
+      border-radius: 12px;
+      border:1px dashed #cbd5e1;
+      background:
+        linear-gradient(135deg, rgba(26,115,232,.10), rgba(217,48,37,.06));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color: rgba(31,35,40,.55);
+      font-size: 12px;
+      text-align:center;
+      padding:8px;
+    }
+
+    @media (max-width: 720px){
+      .gallery{ grid-template-columns: repeat(2, 1fr); }
+    }
+
+    form{
+      padding: 8px 22px 22px;
+    }
+
+    .field{
+      padding: 14px 0;
+      border-top:1px solid var(--line);
+    }
+
+    .label{
+      display:flex;
+      align-items:baseline;
+      gap:6px;
+      font-weight: 650;
+      font-size: 14px;
+      margin-bottom:8px;
+    }
+
+    .star{
+      color: var(--danger);
+      font-weight: 800;
+    }
+
+    .hint{
+      font-size: 12px;
+      color: var(--muted);
+      margin: 6px 0 0;
+    }
+
+    input[type="text"], input[type="email"], input[type="tel"]{
+      width:100%;
+      padding: 12px 12px;
+      border:1px solid #d1d5db;
+      border-radius: 12px;
+      outline:none;
+      font-size: 14px;
+      background:#fff;
+      transition: border .15s, box-shadow .15s;
+    }
+
+    input:focus{
+      border-color: rgba(26,115,232,.9);
+      box-shadow: 0 0 0 4px rgba(26,115,232,.15);
+    }
+
+    .error{
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--danger);
+      display:none;
+    }
+
+    .radios{
+      display:grid;
+      gap:10px;
+      margin-top: 10px;
+    }
+
+    .radio{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      padding: 10px 12px;
+      border:1px solid #e5e7eb;
+      border-radius: 12px;
+      cursor:pointer;
+      user-select:none;
+    }
+
+    .radio:hover{
+      border-color: rgba(26,115,232,.35);
+    }
+
+    .radio input{
+      margin-top: 3px;
+      accent-color: var(--brand);
+      cursor:pointer;
+    }
+
+    .actions{
+      display:flex;
+      gap:12px;
+      justify-content:flex-start;
+      align-items:center;
+      padding-top: 18px;
+    }
+
+    button{
+      border:0;
+      padding: 11px 16px;
+      border-radius: 12px;
+      font-weight: 700;
+      cursor:pointer;
+      font-size: 14px;
+    }
+
+    .btn-primary{
+      background: var(--brand);
+      color:#fff;
+    }
+    .btn-primary:active{ transform: translateY(1px); }
+
+    .btn-ghost{
+      background: transparent;
+      color: var(--brand);
+    }
+
+    .foot{
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height:1.45;
+    }
+
+    .toast{
+      display:none;
+      margin: 14px 22px 0;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(26,115,232,.25);
+      background: rgba(26,115,232,.07);
+      color: #0b3d91;
+      font-size: 13px;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="wrap">
+    <section class="card">
+      <header class="hero">
+        <h1>5ª EDIÇÃO DO PFM EM PAULINO NEVES EM PARCERIA COM A SEMJUV ATRAVÉS DO I. ALFA</h1>
+        <p class="sub">leia as informações abaixo:</p>
+        <div class="req"><span class="star">*</span> Indica uma pergunta obrigatória</div>
+      </header>
+
+      <!-- Imagens do topo (no Google Forms tem várias) -->
+      <div class="gallery" aria-label="Imagens do formulário">
+        <!-- Troque por <img src="..." alt="..."> se você tiver as imagens -->
+        <div class="ph">Imagem 1<br>(opcional)</div>
+        <div class="ph">Imagem 2<br>(opcional)</div>
+        <div class="ph">Imagem 3<br>(opcional)</div>
+        <div class="ph">Imagem 4<br>(opcional)</div>
+        <div class="ph">Imagem 5<br>(opcional)</div>
+      </div>
+
+      <div class="toast" id="toast"></div>
+
+      <form id="form">
+        <!-- NOME -->
+        <div class="field">
+          <div class="label">NOME COMPLETO: <span class="star">*</span></div>
+          <input name="nome" type="text" placeholder="Sua resposta" autocomplete="name" required />
+          <div class="error">Preencha seu nome completo.</div>
+        </div>
+
+        <!-- ENDEREÇO -->
+        <div class="field">
+          <div class="label">ENDEREÇO <span class="star">*</span></div>
+          <input name="endereco" type="text" placeholder="Sua resposta" autocomplete="street-address" required />
+          <div class="error">Preencha seu endereço.</div>
+        </div>
+
+        <!-- WHATSAPP -->
+        <div class="field">
+          <div class="label">TELEFONE WHATSAPP <span class="star">*</span></div>
+          <input id="whats" name="whatsapp" type="tel" placeholder="(00) 00000-0000" autocomplete="tel" required />
+          <div class="hint">Dica: coloque DDD + número.</div>
+          <div class="error">Informe um WhatsApp válido (ex: (98) 99202-4194).</div>
+        </div>
+
+        <!-- EMAIL -->
+        <div class="field">
+          <div class="label">EMAIL <span class="star">*</span></div>
+          <input name="email" type="email" placeholder="Sua resposta" autocomplete="email" required />
+          <div class="error">Informe um e-mail válido.</div>
+        </div>
+
+        <!-- DIA/HORÁRIO -->
+        <div class="field">
+          <div class="label">QUAL DIA E HORÁRIO VOCÊ QUER FAZER A PROVA? <span class="star">*</span></div>
+          <p class="hint">(ESCOLHA DE ACORDO O COM O LOCAL)</p>
+
+          <div class="radios" role="radiogroup" aria-label="Dia e horário">
+            <label class="radio">
+              <input type="radio" name="prova_horario" value="POLO SEDE: SÁBADO MANHÃ ÀS 8HRS" required />
+              <span>POLO SEDE: SÁBADO MANHÃ ÀS 8HRS</span>
+            </label>
+            <label class="radio">
+              <input type="radio" name="prova_horario" value="POLO SEDE DOMINGO MANHÃ ÀS 8HRS" required />
+              <span>POLO SEDE DOMINGO MANHÃ ÀS 8HRS</span>
+            </label>
+            <label class="radio">
+              <input type="radio" name="prova_horario" value="POLO POV. SÃO FRANCISCO DOMINGO MANHÃ ÀS 8HRS" required />
+              <span>POLO POV. SÃO FRANCISCO DOMINGO MANHÃ ÀS 8HRS</span>
+            </label>
+          </div>
+          <div class="error">Selecione uma opção.</div>
+        </div>
+
+        <!-- CURSO -->
+        <div class="field">
+          <div class="label">QUAL O CURSO VOCÊ TEM INTERESSE? <span class="star">*</span></div>
+
+          <div class="radios" role="radiogroup" aria-label="Curso de interesse">
+            <label class="radio">
+              <input type="radio" name="curso" value="TÉCNICO EM ENFERMAGEM" required />
+              <span>TÉCNICO EM ENFERMAGEM</span>
+            </label>
+            <label class="radio">
+              <input type="radio" name="curso" value="5 EM 1 + INFORMÁTICA" required />
+              <span>5 EM 1 + INFORMÁTICA</span>
+            </label>
+            <label class="radio">
+              <input type="radio" name="curso" value="AGENTE DE SAÚDE E ENDEMIAS" required />
+              <span>AGENTE DE SAÚDE E ENDEMIAS</span>
+            </label>
+            <label class="radio">
+              <input type="radio" name="curso" value="TÉCNICO EM FARMÁCIA" required />
+              <span>TÉCNICO EM FARMÁCIA</span>
+            </label>
+          </div>
+          <div class="error">Selecione um curso.</div>
+        </div>
+
+        <!-- CONHECE ALFA -->
+        <div class="field">
+          <div class="label">VOCÊ JA OUVIU FALAR DO INSTITUTO ALFA? <span class="star">*</span></div>
+
+          <div class="radios" role="radiogroup" aria-label="Conhece o Instituto ALFA">
+            <label class="radio">
+              <input type="radio" name="conhece_alfa" value="JA SIM" required />
+              <span>JA SIM</span>
+            </label>
+            <label class="radio">
+              <input type="radio" name="conhece_alfa" value="JA FUI ALUNO" required />
+              <span>JA FUI ALUNO</span>
+            </label>
+            <label class="radio">
+              <input type="radio" name="conhece_alfa" value="NUNCA OUVI FALAR" required />
+              <span>NUNCA OUVI FALAR</span>
+            </label>
+          </div>
+          <div class="error">Selecione uma opção.</div>
+        </div>
+
+        <!-- CONFIRMAÇÃO -->
+        <div class="field">
+          <div class="label">
+            CONFIRMO MINHA INSCRIÇÃO E PRESENÇA NA REALIZAÇÃO DA PROVA NO DIA E HORÁRIO ESCOLHIDO NO LINK DISPONIBILIZADO PELA COORDENAÇÃO DA SECRETARIA DE JUVENTUDE E DO INSTITUTO ALFA.
+            <span class="star">*</span>
+          </div>
+
+          <div class="radios" role="radiogroup" aria-label="Confirmação">
+            <label class="radio">
+              <input type="radio" name="confirmacao" value="CONFIRMO" required />
+              <span>CONFIRMO</span>
+            </label>
+          </div>
+
+          <div class="error">Você precisa confirmar para enviar.</div>
+        </div>
+
+        <div class="actions">
+          <button class="btn-primary" type="submit">Enviar</button>
+          <button class="btn-ghost" type="reset">Limpar formulário</button>
+        </div>
+
+        <p class="foot">Nunca envie senhas por formulários.</p>
+      </form>
+    </section>
+  </main>
+
+  <script>
+    const form = document.getElementById("form");
+    const toast = document.getElementById("toast");
+    const whats = document.getElementById("whats");
+
+    // máscara simples: (99) 99999-9999
+    whats.addEventListener("input", () => {
+      const digits = whats.value.replace(/\D/g, "").slice(0, 11);
+      const ddd = digits.slice(0,2);
+      const p1  = digits.slice(2,7);
+      const p2  = digits.slice(7,11);
+
+      let out = "";
+      if (ddd) out += "(" + ddd + ")";
+      if (p1) out += " " + p1;
+      if (p2) out += "-" + p2;
+      whats.value = out;
+    });
+
+    function showToast(msg){
+      toast.textContent = msg;
+      toast.style.display = "block";
+      setTimeout(()=> toast.style.display = "none", 4500);
+    }
+
+    function setFieldError(fieldEl, on){
+      const err = fieldEl.querySelector(".error");
+      if (!err) return;
+      err.style.display = on ? "block" : "none";
+    }
+
+    function validateWhats(value){
+      const digits = value.replace(/\D/g, "");
+      return digits.length === 11; // padrão BR com 9 dígitos + DDD
+    }
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      // limpa erros
+      [...form.querySelectorAll(".field")].forEach(f => setFieldError(f, false));
+
+      let ok = true;
+
+      // valida required inputs (text/email/tel)
+      const requiredInputs = [...form.querySelectorAll("input[required]")];
+      for (const input of requiredInputs){
+        const field = input.closest(".field");
+
+        if (input.type === "radio") continue;
+
+        if (!input.value.trim()){
+          setFieldError(field, true);
+          ok = false;
+        }
+
+        if (input.name === "whatsapp" && input.value.trim() && !validateWhats(input.value)){
+          setFieldError(field, true);
+          ok = false;
+        }
+
+        if (input.type === "email" && input.value.trim()){
+          const valid = input.checkValidity();
+          if (!valid){
+            setFieldError(field, true);
+            ok = false;
+          }
+        }
+      }
+
+      // valida grupos de rádio obrigatórios
+      const radioNames = ["prova_horario","curso","conhece_alfa","confirmacao"];
+      for (const name of radioNames){
+        const group = form.querySelector(`input[name="${name}"]`)?.closest(".field");
+        const checked = form.querySelector(`input[name="${name}"]:checked`);
+        if (!checked){
+          if (group) setFieldError(group, true);
+          ok = false;
+        }
+      }
+
+      if (!ok){
+        showToast("Revise os campos obrigatórios marcados com *.");
+        return;
+      }
+
+      // Coleta dados
+      const data = Object.fromEntries(new FormData(form).entries());
+
+      // Aqui você pode enviar pro Google Sheets (Apps Script) com fetch()
+      // Por enquanto, simula envio:
+      console.log("Dados do formulário:", data);
+
+      showToast("Enviado com sucesso! ✅");
+
+      // Tela simples pós-envio
+      form.innerHTML = `
+        <div class="field" style="border-top:none;padding-top:6px;">
+          <div class="label" style="font-size:16px;">Resposta registrada</div>
+          <p class="hint" style="font-size:13px;">
+            Obrigado! Sua inscrição foi enviada. Se precisar corrigir alguma informação, fale com a coordenação.
+          </p>
+          <div class="actions">
+            <button class="btn-primary" type="button" id="new">Enviar outra resposta</button>
+          </div>
+        </div>
+      `;
+
+      document.getElementById("new").addEventListener("click", () => location.reload());
+    });
+  </script>
+</body>
+</html>
