@@ -514,11 +514,17 @@
         const html = quill.root.innerHTML;
         const password = pass.value;
 
-        const res = await fetch(DESTAQUE_API, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ action:"save", password, html })
-        });
+const form = new URLSearchParams();
+form.set("action", "save");
+form.set("password", password);
+form.set("html", html);
+
+const res = await fetch(DESTAQUE_API, {
+  method: "POST",
+  body: form
+});
+
+
 
         const data = await res.json();
         if(!data.ok) throw new Error(data.error || "Falha ao salvar.");
