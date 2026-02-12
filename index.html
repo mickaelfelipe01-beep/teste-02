@@ -139,6 +139,7 @@
       font-weight:800;font-size:13px;white-space:nowrap;
       transition: transform .08s ease, background .2s ease, border-color .2s ease;
       flex:0 0 auto;
+      cursor:pointer;
     }
     .btn:hover{transform: translateY(-1px); background: rgba(15,23,42,.03)}
     .btn.primary{border-color: rgba(22,163,74,.35); background: rgba(22,163,74,.10)}
@@ -153,7 +154,6 @@
       color: var(--muted);font-size:12.5px;line-height:1.35;
     }
 
-    /* Destaque (conteúdo renderizado) */
     .article{
       background:#fff;
       border:1px solid rgba(15,23,42,.10);
@@ -163,7 +163,7 @@
     }
     .article img{max-width:100%; border-radius:12px}
 
-    /* Modal editor */
+    /* Modal genérico */
     .modal-backdrop{
       position:fixed; inset:0;
       background: rgba(2,6,23,.45);
@@ -189,17 +189,49 @@
     .modal-hd strong{font-size:14px}
     .modal-bd{padding:14px 16px}
     .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
-    .row input{
+    .row input, .row select{
       padding:10px 12px;
       border:1px solid rgba(15,23,42,.14);
       border-radius:12px;
       outline:0;
       width:260px;
+      background:#fff;
     }
     #editor{height:320px; background:#fff}
     .status{font-size:12px; color: var(--muted)}
     footer{margin-top:16px;padding:14px 16px;text-align:center;color: rgba(15,23,42,.55);font-size:12px}
     .muted{color:var(--muted)}
+
+    /* tabela editor listas */
+    .table{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
+      border:1px solid rgba(15,23,42,.12);
+      border-radius:14px;
+      overflow:hidden;
+    }
+    .table th,.table td{
+      border-bottom:1px solid rgba(15,23,42,.10);
+      padding:10px;
+      font-size:12.5px;
+      vertical-align:top;
+    }
+    .table th{
+      background: rgba(15,23,42,.02);
+      text-align:left;
+      font-size:12px;
+      color: rgba(15,23,42,.7);
+    }
+    .table td input, .table td select{
+      width:100%;
+      padding:8px 10px;
+      border:1px solid rgba(15,23,42,.14);
+      border-radius:10px;
+      outline:0;
+    }
+    .table tr:last-child td{border-bottom:0}
+    .small{font-size:12px;color:var(--muted)}
   </style>
 </head>
 
@@ -227,30 +259,39 @@
 
     <section class="card">
       <div class="tabs" role="tablist" aria-label="Navegação">
-        <div class="tab active" data-tab="atividades" role="tab" aria-selected="true">📝 Atividades</div>
+        <div class="tab" data-tab="atividades" role="tab" aria-selected="false">📝 Atividades</div>
         <div class="tab" data-tab="pdfs" role="tab" aria-selected="false">📚 PDFs</div>
         <div class="tab" data-tab="proximas" role="tab" aria-selected="false">📘 Próximas aulas</div>
-        <div class="tab" data-tab="destaque" role="tab" aria-selected="false">⭐ Destaque</div>
+        <div class="tab active" data-tab="destaque" role="tab" aria-selected="true">⭐ Destaque</div>
         <div class="tab" data-tab="avisos" role="tab" aria-selected="false">📢 Avisos</div>
       </div>
 
       <!-- HDs -->
-      <div class="hd" data-hd="atividades">
+      <div class="hd" data-hd="atividades" style="display:none">
         <h2>📝 Atividades da Semana</h2>
-        <span class="tag ok">Atualizado</span>
+        <div class="row" style="justify-content:flex-end">
+          <button class="btn ghost" type="button" data-manage="atividades">⚙️ Gerenciar</button>
+          <span class="tag ok">Atualizado</span>
+        </div>
       </div>
 
       <div class="hd" data-hd="pdfs" style="display:none">
         <h2>📚 PDFs das Aulas (Passadas e Materiais)</h2>
-        <span class="tag">Google Drive</span>
+        <div class="row" style="justify-content:flex-end">
+          <button class="btn ghost" type="button" data-manage="pdfs">⚙️ Gerenciar</button>
+          <span class="tag">Google Drive</span>
+        </div>
       </div>
 
       <div class="hd" data-hd="proximas" style="display:none">
         <h2>📘 Próximas aulas</h2>
-        <span class="tag warn">Em breve</span>
+        <div class="row" style="justify-content:flex-end">
+          <button class="btn ghost" type="button" data-manage="proximas">⚙️ Gerenciar</button>
+          <span class="tag warn">Em breve</span>
+        </div>
       </div>
 
-      <div class="hd" data-hd="destaque" style="display:none">
+      <div class="hd" data-hd="destaque">
         <h2>⭐ Destaque da Semana</h2>
         <span class="tag">Artigo</span>
       </div>
@@ -261,29 +302,8 @@
       </div>
 
       <!-- PAINÉIS -->
-      <div class="panel active" id="panel-atividades" data-panel="atividades">
-        <div class="list">
-          <div class="item" data-tags="atividade semana windows configurações aula 03">
-            <div class="left">
-              <div class="name">Atividade — Configurações do Windows</div>
-              <div class="meta">Baseada na Aula 03 • Prazo: até sexta-feira</div>
-            </div>
-            <a class="btn primary" target="_blank" rel="noopener" href="https://SEU_LINK_DA_ATIVIDADE_AQUI">
-              Abrir atividade ↗
-            </a>
-          </div>
-
-          <div class="item" data-tags="atividade internet navegador segurança">
-            <div class="left">
-              <div class="name">Atividade — Internet e Navegadores</div>
-              <div class="meta">Exercícios de fixação • Prazo: até sexta-feira</div>
-            </div>
-            <a class="btn orange" target="_blank" rel="noopener" href="https://SEU_LINK_DA_ATIVIDADE_AQUI">
-              Abrir atividade ↗
-            </a>
-          </div>
-        </div>
-
+      <div class="panel" id="panel-atividades" data-panel="atividades">
+        <div class="list" id="list-atividades"></div>
         <div class="note">
           ✅ Se alguma atividade não abrir, me avise.<br>
           📌 Faça com calma e revise antes de enviar.
@@ -291,18 +311,7 @@
       </div>
 
       <div class="panel" id="panel-pdfs" data-panel="pdfs">
-        <div class="list">
-          <div class="item" data-tags="pdf aula 01 introdução informática conceitos">
-            <div class="left">
-              <div class="name">Aula 01 — O que é Informática? (PDF)</div>
-              <div class="meta">Material de apoio • PDF no Google Drive</div>
-            </div>
-            <a class="btn primary" target="_blank" rel="noopener" href="https://drive.google.com/file/d/SEU_ID_AQUI/view?usp=sharing">
-              Abrir PDF ↗
-            </a>
-          </div>
-        </div>
-
+        <div class="list" id="list-pdfs"></div>
         <div class="note">
           🔎 Use a busca no topo (ex.: “Aula 01”, “Windows”, “Internet”).<br>
           ✅ PDFs ficam no Drive — link de visualização.
@@ -310,28 +319,17 @@
       </div>
 
       <div class="panel" id="panel-proximas" data-panel="proximas">
-        <div class="list">
-          <div class="item" data-tags="aula 05 pacote office word excel">
-            <div class="left">
-              <div class="name">Aula 05 — Pacote Office (Word/Excel)</div>
-              <div class="meta">Material será liberado após a aula</div>
-            </div>
-            <a class="btn ghost" href="#" onclick="return false;">Em breve</a>
-          </div>
-        </div>
-
+        <div class="list" id="list-proximas"></div>
         <div class="note">
-          📌 Quando o PDF estiver pronto, troque “Em breve” por “Abrir PDF”.
+          📌 Quando o material estiver pronto, troque “Em breve” por “Abrir PDF”.
         </div>
       </div>
 
       <!-- ⭐ DESTAQUE -->
-      <div class="panel" id="panel-destaque" data-panel="destaque">
+      <div class="panel active" id="panel-destaque" data-panel="destaque">
         <div class="row" style="justify-content:space-between">
           <div class="status" id="destaqueStatus">Carregando o destaque…</div>
-          <button class="btn primary" id="btnEditarDestaque" type="button" title="Editar (professor)">
-            ✏️ Editar
-          </button>
+          <button class="btn primary" id="btnEditarDestaque" type="button" title="Editar (professor)">✏️ Editar</button>
         </div>
 
         <div style="height:10px"></div>
@@ -355,16 +353,14 @@
           ✅ Antes de dizer “perdi o link”, confira esta página 😄
         </div>
       </div>
-
     </section>
 
     <footer>
       Instituto ALFA • Área do Aluno — <span class="muted">Formando vencedores!</span>
     </footer>
-
   </div>
 
-  <!-- Modal Editor -->
+  <!-- Modal do Destaque -->
   <div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">
     <div class="modal" role="dialog" aria-modal="true" aria-label="Editor do Destaque">
       <div class="modal-hd">
@@ -386,15 +382,71 @@
     </div>
   </div>
 
+  <!-- Modal Gerenciar Listas -->
+  <div class="modal-backdrop" id="listBackdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-label="Gerenciar itens">
+      <div class="modal-hd">
+        <strong id="listTitle">Gerenciar</strong>
+        <button class="btn danger" id="btnFecharList" type="button">Fechar</button>
+      </div>
+      <div class="modal-bd">
+        <div class="row">
+          <input id="listPass" type="password" placeholder="Senha do professor" />
+          <button class="btn primary" id="btnSalvarList" type="button">💾 Salvar alterações</button>
+          <button class="btn ghost" id="btnAddRow" type="button">➕ Adicionar item</button>
+          <span class="status" id="listStatus">—</span>
+        </div>
+
+        <div style="height:12px"></div>
+
+        <div class="small">Dica: use <b>tags</b> para facilitar a busca (ex.: "aula 03 windows internet").</div>
+        <div style="height:10px"></div>
+
+        <table class="table">
+          <thead>
+            <tr>
+              <th style="width:22%">Título</th>
+              <th style="width:22%">Meta</th>
+              <th style="width:18%">Link</th>
+              <th style="width:14%">Tags</th>
+              <th style="width:10%">Botão</th>
+              <th style="width:8%">Estilo</th>
+              <th style="width:6%">Ações</th>
+            </tr>
+          </thead>
+          <tbody id="listTbody"></tbody>
+        </table>
+
+        <div class="note">
+          ✅ Após salvar, o site recarrega a lista automaticamente.<br>
+          ⚠️ Se o link ficar vazio, o botão vira “Em breve”.
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.min.js"></script>
   <script>
     // ✅ URL do Web App do Apps Script:
-    const DESTAQUE_API = "https://script.google.com/macros/s/AKfycbxxUkPoPIJ0YMd6C9W-lW-A17kqTWgapFud-dgX627s86h2e8EImepvjAu-9LUBUic3SQ/exec";
+    const API = "https://script.google.com/macros/s/AKfycbxxUkPoPIJ0YMd6C9W-lW-A17kqTWgapFud-dgX627s86h2e8EImepvjAu-9LUBUic3SQ/exec";
 
     const tabs = Array.from(document.querySelectorAll('.tab'));
     const panels = Array.from(document.querySelectorAll('.panel'));
     const headers = Array.from(document.querySelectorAll('.hd'));
     const q = document.getElementById('q');
+
+    const listEls = {
+      atividades: document.getElementById("list-atividades"),
+      pdfs: document.getElementById("list-pdfs"),
+      proximas: document.getElementById("list-proximas"),
+    };
+
+    let cache = {
+      atividades: [],
+      pdfs: [],
+      proximas: [],
+      destaqueHtml: ""
+    };
 
     function norm(s){
       return (s||"")
@@ -441,7 +493,84 @@
 
     tabs.forEach(t=> t.addEventListener('click', ()=> setActive(t.dataset.tab)));
     q.addEventListener('input', applyFilter);
-    applyFilter();
+
+    function escapeHtml(s){
+      return String(s||"")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function renderList(section, items){
+      const host = listEls[section];
+      host.innerHTML = "";
+
+      if(!items || !items.length){
+        host.innerHTML = `
+          <div class="note" style="margin-top:0">
+            ⚠️ Nenhum item cadastrado ainda. Clique em <b>⚙️ Gerenciar</b> para adicionar.
+          </div>`;
+        return;
+      }
+
+      items.forEach(it=>{
+        if(it && it.enabled === false) return;
+
+        const title = escapeHtml(it.title);
+        const meta = escapeHtml(it.meta);
+        const link = String(it.link||"").trim();
+        const tags = escapeHtml(it.tags || "");
+
+        const btnText = escapeHtml(it.btn || (link ? "Abrir ↗" : "Em breve"));
+        const style = (it.style || (section==="atividades" ? "primary" : "primary")).trim();
+        const badge = escapeHtml(it.badge || "");
+
+        const isDisabled = !link || link === "#";
+        const btnHtml = isDisabled
+          ? `<a class="btn ghost" href="#" onclick="return false;">${btnText || "Em breve"}</a>`
+          : `<a class="btn ${escapeHtml(style)}" target="_blank" rel="noopener" href="${escapeHtml(link)}">${btnText}</a>`;
+
+        host.insertAdjacentHTML("beforeend", `
+          <div class="item" data-tags="${tags} ${title} ${meta}">
+            <div class="left">
+              <div class="name">${title}</div>
+              <div class="meta">${meta}${badge ? " • " + badge : ""}</div>
+            </div>
+            ${btnHtml}
+          </div>
+        `);
+      });
+
+      applyFilter();
+    }
+
+    async function loadAll(){
+      // Seu cenário anterior já lia JSON via fetch.
+      // Mantemos assim para não bagunçar o que já estava funcionando.
+      const url = API + "?action=getAll&ts=" + Date.now();
+      const res = await fetch(url, { method:"GET" });
+      const data = await res.json();
+
+      if(!data.ok) throw new Error(data.error || "Falha ao carregar.");
+      cache = {
+        atividades: data.data.atividades || [],
+        pdfs: data.data.pdfs || [],
+        proximas: data.data.proximas || [],
+        destaqueHtml: data.data.destaqueHtml || ""
+      };
+
+      renderList("atividades", cache.atividades);
+      renderList("pdfs", cache.pdfs);
+      renderList("proximas", cache.proximas);
+
+      // atualiza destaque em cache também
+      if(cache.destaqueHtml){
+        lastLoadedHtml = cache.destaqueHtml;
+        destaqueView.innerHTML = lastLoadedHtml || "<h2>Destaque da Semana</h2><p>Nenhum conteúdo ainda.</p>";
+      }
+    }
 
     // -------- Destaque da semana (viewer + editor) --------
     const destaqueView = document.getElementById("destaqueView");
@@ -473,14 +602,18 @@
     async function loadDestaque(){
       try{
         destaqueStatus.textContent = "Carregando o destaque…";
-        const url = DESTAQUE_API + "?action=get&ts=" + Date.now();
+        // se já veio no getAll, usa cache e não depende de outra chamada
+        if (cache.destaqueHtml) {
+          lastLoadedHtml = cache.destaqueHtml;
+          destaqueView.innerHTML = lastLoadedHtml || "<h2>Destaque da Semana</h2><p>Nenhum conteúdo ainda.</p>";
+          destaqueStatus.textContent = "✅ Destaque carregado.";
+          return;
+        }
+
+        const url = API + "?action=get&ts=" + Date.now();
         const res = await fetch(url, { method: "GET" });
-
-        // Se o browser bloquear por CORS, cai no catch
         const data = await res.json();
-
         if(!data.ok) throw new Error(data.error || "Falha ao carregar.");
-
         lastLoadedHtml = data.html || "";
         destaqueView.innerHTML = lastLoadedHtml || "<h2>Destaque da Semana</h2><p>Nenhum conteúdo ainda.</p>";
         destaqueStatus.textContent = "✅ Destaque carregado.";
@@ -498,7 +631,6 @@
       backdrop.setAttribute("aria-hidden","false");
       setTimeout(()=> pass.focus(), 50);
     }
-
     function closeModal(){
       backdrop.classList.remove("show");
       backdrop.setAttribute("aria-hidden","true");
@@ -513,29 +645,19 @@
         saveStatus.textContent = "Salvando…";
         const html = quill.root.innerHTML;
         const password = (pass.value || "").trim();
-
-        if (!password) {
-          saveStatus.textContent = "❌ Digite a senha.";
-          return;
-        }
+        if (!password) { saveStatus.textContent = "❌ Digite a senha."; return; }
 
         const form = new URLSearchParams();
         form.set("action", "save");
         form.set("password", password);
         form.set("html", html);
 
-        // ✅ No GitHub Pages, o navegador pode bloquear leitura da resposta (CORS).
-        // Então enviamos no-cors e confirmamos recarregando o conteúdo.
-        await fetch(DESTAQUE_API, {
-          method: "POST",
-          body: form,
-          mode: "no-cors"
-        });
+        await fetch(API, { method:"POST", body: form, mode:"no-cors" });
 
-        saveStatus.textContent = "✅ Salvo! Atualizando…";
-        await loadDestaque();
+        saveStatus.textContent = "✅ Salvo! Recarregando…";
+        cache.destaqueHtml = ""; // força reload via loadAll
+        await loadAll();
         saveStatus.textContent = "✅ Salvo com sucesso!";
-
         setTimeout(closeModal, 600);
       }catch(err){
         saveStatus.textContent = "❌ Erro ao salvar. Tente novamente.";
@@ -543,8 +665,141 @@
       }
     });
 
-    // carrega 1x
-    loadDestaque();
+    // -------- Gerenciar listas (Atividades / PDFs / Próximas) --------
+    const listBackdrop = document.getElementById("listBackdrop");
+    const btnFecharList = document.getElementById("btnFecharList");
+    const btnSalvarList = document.getElementById("btnSalvarList");
+    const btnAddRow = document.getElementById("btnAddRow");
+    const listPass = document.getElementById("listPass");
+    const listStatus = document.getElementById("listStatus");
+    const listTitle = document.getElementById("listTitle");
+    const listTbody = document.getElementById("listTbody");
+
+    let currentSection = "atividades";
+
+    function openListModal(section){
+      currentSection = section;
+      listTitle.textContent = "Gerenciar — " + (section === "pdfs" ? "PDFs" : section === "proximas" ? "Próximas aulas" : "Atividades");
+      listPass.value = "";
+      listStatus.textContent = "—";
+      renderEditorRows(cache[section] || []);
+      listBackdrop.classList.add("show");
+      listBackdrop.setAttribute("aria-hidden","false");
+      setTimeout(()=> listPass.focus(), 50);
+    }
+
+    function closeListModal(){
+      listBackdrop.classList.remove("show");
+      listBackdrop.setAttribute("aria-hidden","true");
+    }
+
+    function renderEditorRows(items){
+      const safe = Array.isArray(items) ? items : [];
+      listTbody.innerHTML = "";
+      safe.forEach((it, idx)=> addRowToEditor(it));
+      if(!safe.length) addRowToEditor({});
+    }
+
+    function addRowToEditor(it){
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td><input data-k="title" placeholder="Ex: Atividade — Aula 03" value="${escapeHtml(it.title||"")}"></td>
+        <td><input data-k="meta" placeholder="Ex: Prazo: sexta-feira" value="${escapeHtml(it.meta||"")}"></td>
+        <td><input data-k="link" placeholder="https://..." value="${escapeHtml(it.link||"")}"></td>
+        <td><input data-k="tags" placeholder="aula 03 windows..." value="${escapeHtml(it.tags||"")}"></td>
+        <td><input data-k="btn" placeholder="Abrir ↗ / Em breve" value="${escapeHtml(it.btn||"")}"></td>
+        <td>
+          <select data-k="style">
+            <option value="primary">primary</option>
+            <option value="orange">orange</option>
+            <option value="ghost">ghost</option>
+          </select>
+          <div class="small" style="margin-top:6px">
+            <label style="display:flex;gap:8px;align-items:center">
+              <input type="checkbox" data-k="enabled" ${it.enabled === false ? "" : "checked"} />
+              Ativo
+            </label>
+          </div>
+        </td>
+        <td>
+          <button class="btn danger" type="button" data-remove>Remover</button>
+        </td>
+      `;
+      row.querySelector('[data-k="style"]').value = (it.style || "primary");
+
+      row.querySelector("[data-remove]").addEventListener("click", ()=>{
+        row.remove();
+      });
+
+      listTbody.appendChild(row);
+    }
+
+    function readEditorItems(){
+      const rows = Array.from(listTbody.querySelectorAll("tr"));
+      const items = rows.map(tr=>{
+        const get = (k)=> tr.querySelector(`[data-k="${k}"]`);
+        const obj = {
+          title: (get("title").value||"").trim(),
+          meta: (get("meta").value||"").trim(),
+          link: (get("link").value||"").trim(),
+          tags: (get("tags").value||"").trim(),
+          btn: (get("btn").value||"").trim(),
+          style: (get("style").value||"primary").trim(),
+          enabled: !!get("enabled").checked,
+          badge: "" // opcional (se quiser, eu adiciono campo depois)
+        };
+        return obj;
+      }).filter(x => x.title);
+
+      return items;
+    }
+
+    document.querySelectorAll("[data-manage]").forEach(btn=>{
+      btn.addEventListener("click", ()=> openListModal(btn.getAttribute("data-manage")));
+    });
+
+    btnFecharList.addEventListener("click", closeListModal);
+    listBackdrop.addEventListener("click", (e)=>{ if(e.target === listBackdrop) closeListModal(); });
+    btnAddRow.addEventListener("click", ()=> addRowToEditor({}));
+
+    btnSalvarList.addEventListener("click", async ()=>{
+      try{
+        listStatus.textContent = "Salvando…";
+        const password = (listPass.value||"").trim();
+        if(!password){ listStatus.textContent = "❌ Digite a senha."; return; }
+
+        const items = readEditorItems();
+
+        const form = new URLSearchParams();
+        form.set("action","saveList");
+        form.set("password", password);
+        form.set("section", currentSection);
+        form.set("items", JSON.stringify(items));
+
+        await fetch(API, { method:"POST", body: form, mode:"no-cors" });
+
+        listStatus.textContent = "✅ Salvo! Recarregando…";
+        await loadAll();
+        listStatus.textContent = "✅ Alterações aplicadas!";
+        setTimeout(closeListModal, 600);
+      }catch(err){
+        listStatus.textContent = "❌ Erro ao salvar. Tente novamente.";
+        console.error(err);
+      }
+    });
+
+    // ✅ inicia: força abrir no destaque
+    setActive("destaque");
+    applyFilter();
+
+    // carrega tudo 1x
+    loadAll().catch(err=>{
+      console.error(err);
+      // fallback mínimo (para não ficar vazio)
+      renderList("atividades", []);
+      renderList("pdfs", []);
+      renderList("proximas", []);
+    });
   </script>
 </body>
 </html>
