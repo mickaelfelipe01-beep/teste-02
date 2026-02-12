@@ -1,0 +1,557 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Área do Aluno • Instituto ALFA</title>
+
+  <link rel="icon" type="image/png" href="https://mickaelfelipe01-beep.github.io/Atividades/aulas-informatica-alpha/imagens/Design%20sem%20nome%20(8).png">
+
+  <!-- Editor "tipo Word" (Quill) -->
+  <link href="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.snow.css" rel="stylesheet"/>
+
+  <style>
+    :root{
+      --bg1:#f6f7fb;
+      --bg2:#eef2f7;
+      --card:#ffffff;
+      --card2:#ffffff;
+      --line:rgba(15,23,42,.10);
+      --text:#0f172a;
+      --muted:rgba(15,23,42,.65);
+      --brand:#16a34a;
+      --brand2:#f97316;
+      --shadow: 0 18px 45px rgba(2,6,23,.08);
+      --radius: 18px;
+      --radius2: 14px;
+      --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:var(--font);
+      color:var(--text);
+      background:
+        radial-gradient(900px 450px at 10% 10%, rgba(22,163,74,.10), transparent 55%),
+        radial-gradient(900px 450px at 90% 10%, rgba(249,115,22,.10), transparent 55%),
+        linear-gradient(160deg, var(--bg1), var(--bg2));
+    }
+
+    .wrap{max-width:1100px;margin:0 auto;padding:28px 18px 40px}
+
+    header{
+      display:flex;align-items:center;justify-content:space-between;gap:16px;
+      padding:18px;border:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,255,255,.90));
+      border-radius: var(--radius); box-shadow: var(--shadow);
+    }
+
+    .brand{display:flex;align-items:center;gap:14px;min-width:240px}
+    .logo{
+      width:54px;height:54px;border-radius:16px;background:#fff;
+      border:1px solid var(--line);
+      display:grid;place-items:center;overflow:hidden;flex:0 0 auto;
+    }
+    .logo img{width:100%;height:100%;object-fit:cover}
+
+    .title{display:flex;flex-direction:column;line-height:1.15}
+    .title strong{font-size:18px; letter-spacing:.2px}
+    .title span{font-size:13px;color:var(--muted)}
+
+    .actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+
+    .pill{
+      display:inline-flex;align-items:center;gap:10px;
+      padding:10px 12px;border:1px solid var(--line);
+      background: rgba(255,255,255,.75);
+      border-radius:999px;color:var(--muted);font-size:13px;white-space:nowrap;
+    }
+
+    .search{
+      display:flex;align-items:center;gap:10px;
+      padding:10px 14px;border:1px solid var(--line);
+      background:#fff;border-radius:999px;min-width:280px;
+    }
+    .search input{width:100%;border:0;outline:0;background:transparent;color:var(--text);font-size:14px}
+    .search input::placeholder{color:rgba(15,23,42,.45)}
+
+    @media (max-width: 920px){
+      .actions{justify-content:flex-start}
+      .search{min-width:0;width:100%}
+      header{flex-direction:column;align-items:stretch}
+    }
+
+    .card{
+      margin-top:16px;border:1px solid var(--line);
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+
+    .tabs{display:flex;gap:10px;padding:14px 14px 0;flex-wrap:wrap}
+    .tab{
+      border:1px solid var(--line);
+      background: rgba(15,23,42,.03);
+      color: var(--muted);
+      padding:10px 12px;border-radius:999px;cursor:pointer;
+      font-weight:800;font-size:13px;transition: transform .08s ease, background .2s ease, border-color .2s ease;
+      user-select:none;
+    }
+    .tab:hover{transform: translateY(-1px); background: rgba(15,23,42,.06)}
+    .tab.active{color: var(--text); border-color: rgba(22,163,74,.35); background: rgba(22,163,74,.12)}
+
+    .panel{display:none;padding:14px 18px 18px}
+    .panel.active{display:block}
+
+    .hd{
+      padding:16px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px;
+      border-top:1px solid rgba(15,23,42,.06);
+      border-bottom:1px solid rgba(15,23,42,.06);
+      background: rgba(15,23,42,.02);
+    }
+    .hd h2{margin:0;font-size:15px;letter-spacing:.25px;display:flex;align-items:center;gap:10px}
+
+    .tag{
+      font-size:12px;padding:6px 10px;border-radius:999px;
+      border:1px solid var(--line);background:#fff;color:var(--muted);
+    }
+    .tag.ok{border-color: rgba(22,163,74,.35); background: rgba(22,163,74,.10); color:#0b3b1c}
+    .tag.warn{border-color: rgba(249,115,22,.35); background: rgba(249,115,22,.10); color:#5a2b00}
+
+    .list{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+
+    .item{
+      display:flex;align-items:flex-start;justify-content:space-between;gap:12px;
+      padding:12px 12px;border:1px solid rgba(15,23,42,.10);
+      background: rgba(15,23,42,.02);border-radius: var(--radius2);
+    }
+    .item .left{display:flex;flex-direction:column;gap:4px;min-width:0}
+    .item .name{font-weight:800;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .item .meta{font-size:12px;color:var(--muted);line-height:1.25}
+
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:8px;
+      padding:9px 12px;border-radius:12px;border:1px solid rgba(15,23,42,.12);
+      background:#fff;color: var(--text);text-decoration:none;
+      font-weight:800;font-size:13px;white-space:nowrap;
+      transition: transform .08s ease, background .2s ease, border-color .2s ease;
+      flex:0 0 auto;
+    }
+    .btn:hover{transform: translateY(-1px); background: rgba(15,23,42,.03)}
+    .btn.primary{border-color: rgba(22,163,74,.35); background: rgba(22,163,74,.10)}
+    .btn.orange{border-color: rgba(249,115,22,.35); background: rgba(249,115,22,.10)}
+    .btn.ghost{background: rgba(15,23,42,.02)}
+    .btn.danger{border-color: rgba(239,68,68,.30); background: rgba(239,68,68,.10)}
+
+    .note{
+      margin-top:12px;padding:12px 12px;border-radius: var(--radius2);
+      border:1px dashed rgba(15,23,42,.18);
+      background: rgba(15,23,42,.02);
+      color: var(--muted);font-size:12.5px;line-height:1.35;
+    }
+
+    /* Destaque (conteúdo renderizado) */
+    .article{
+      background:#fff;
+      border:1px solid rgba(15,23,42,.10);
+      border-radius: var(--radius2);
+      padding:14px;
+      overflow-wrap:anywhere;
+    }
+    .article img{max-width:100%; border-radius:12px}
+
+    /* Modal editor */
+    .modal-backdrop{
+      position:fixed; inset:0;
+      background: rgba(2,6,23,.45);
+      display:none; align-items:center; justify-content:center;
+      padding:16px;
+      z-index:9999;
+    }
+    .modal-backdrop.show{display:flex}
+    .modal{
+      width:min(980px, 100%);
+      background:#fff;
+      border-radius: 18px;
+      border:1px solid rgba(15,23,42,.12);
+      box-shadow: 0 30px 80px rgba(2,6,23,.25);
+      overflow:hidden;
+    }
+    .modal-hd{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      padding:14px 16px;
+      border-bottom:1px solid rgba(15,23,42,.10);
+      background: rgba(15,23,42,.02);
+    }
+    .modal-hd strong{font-size:14px}
+    .modal-bd{padding:14px 16px}
+    .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+    .row input{
+      padding:10px 12px;
+      border:1px solid rgba(15,23,42,.14);
+      border-radius:12px;
+      outline:0;
+      width:260px;
+    }
+    #editor{height:320px; background:#fff}
+    .status{font-size:12px; color: var(--muted)}
+    footer{margin-top:16px;padding:14px 16px;text-align:center;color: rgba(15,23,42,.55);font-size:12px}
+    .muted{color:var(--muted)}
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+
+    <header>
+      <div class="brand">
+        <div class="logo">
+          <img src="https://mickaelfelipe01-beep.github.io/Atividades/aulas-informatica-alpha/imagens/Design%20sem%20nome%20(8).png" alt="Instituto ALFA">
+        </div>
+        <div class="title">
+          <strong>Área do Aluno • Instituto ALFA</strong>
+          <span>Materiais e atividades do curso em um só lugar</span>
+        </div>
+      </div>
+
+      <div class="actions">
+        <div class="pill">📌 Salve este link nos favoritos</div>
+        <div class="search" title="Pesquisar na aba atual">
+          🔎 <input id="q" type="search" placeholder="Pesquisar nesta aba..." />
+        </div>
+      </div>
+    </header>
+
+    <section class="card">
+      <div class="tabs" role="tablist" aria-label="Navegação">
+        <div class="tab" data-tab="atividades" role="tab" aria-selected="false">📝 Atividades</div>
+        <div class="tab" data-tab="pdfs" role="tab" aria-selected="false">📚 PDFs</div>
+        <div class="tab" data-tab="proximas" role="tab" aria-selected="false">📘 Próximas aulas</div>
+
+        <!-- ✅ AGORA O DESTAQUE É O PRIMEIRO A ABRIR -->
+        <div class="tab active" data-tab="destaque" role="tab" aria-selected="true">⭐ Destaque</div>
+
+        <div class="tab" data-tab="avisos" role="tab" aria-selected="false">📢 Avisos</div>
+      </div>
+
+      <!-- HDs -->
+      <div class="hd" data-hd="atividades" style="display:none">
+        <h2>📝 Atividades da Semana</h2>
+        <span class="tag ok">Atualizado</span>
+      </div>
+
+      <div class="hd" data-hd="pdfs" style="display:none">
+        <h2>📚 PDFs das Aulas (Passadas e Materiais)</h2>
+        <span class="tag">Google Drive</span>
+      </div>
+
+      <div class="hd" data-hd="proximas" style="display:none">
+        <h2>📘 Próximas aulas</h2>
+        <span class="tag warn">Em breve</span>
+      </div>
+
+      <!-- ✅ HD DO DESTAQUE VISÍVEL AO INICIAR -->
+      <div class="hd" data-hd="destaque">
+        <h2>⭐ Destaque da Semana</h2>
+        <span class="tag">Artigo</span>
+      </div>
+
+      <div class="hd" data-hd="avisos" style="display:none">
+        <h2>📢 Avisos</h2>
+        <span class="tag">Recados</span>
+      </div>
+
+      <!-- PAINÉIS -->
+      <div class="panel" id="panel-atividades" data-panel="atividades">
+        <div class="list">
+          <div class="item" data-tags="atividade semana windows configurações aula 03">
+            <div class="left">
+              <div class="name">Atividade — Configurações do Windows</div>
+              <div class="meta">Baseada na Aula 03 • Prazo: até sexta-feira</div>
+            </div>
+            <a class="btn primary" target="_blank" rel="noopener" href="https://SEU_LINK_DA_ATIVIDADE_AQUI">
+              Abrir atividade ↗
+            </a>
+          </div>
+
+          <div class="item" data-tags="atividade internet navegador segurança">
+            <div class="left">
+              <div class="name">Atividade — Internet e Navegadores</div>
+              <div class="meta">Exercícios de fixação • Prazo: até sexta-feira</div>
+            </div>
+            <a class="btn orange" target="_blank" rel="noopener" href="https://SEU_LINK_DA_ATIVIDADE_AQUI">
+              Abrir atividade ↗
+            </a>
+          </div>
+        </div>
+
+        <div class="note">
+          ✅ Se alguma atividade não abrir, me avise.<br>
+          📌 Faça com calma e revise antes de enviar.
+        </div>
+      </div>
+
+      <div class="panel" id="panel-pdfs" data-panel="pdfs">
+        <div class="list">
+          <div class="item" data-tags="pdf aula 01 introdução informática conceitos">
+            <div class="left">
+              <div class="name">Aula 01 — O que é Informática? (PDF)</div>
+              <div class="meta">Material de apoio • PDF no Google Drive</div>
+            </div>
+            <a class="btn primary" target="_blank" rel="noopener" href="https://drive.google.com/file/d/SEU_ID_AQUI/view?usp=sharing">
+              Abrir PDF ↗
+            </a>
+          </div>
+        </div>
+
+        <div class="note">
+          🔎 Use a busca no topo (ex.: “Aula 01”, “Windows”, “Internet”).<br>
+          ✅ PDFs ficam no Drive — link de visualização.
+        </div>
+      </div>
+
+      <div class="panel" id="panel-proximas" data-panel="proximas">
+        <div class="list">
+          <div class="item" data-tags="aula 05 pacote office word excel">
+            <div class="left">
+              <div class="name">Aula 05 — Pacote Office (Word/Excel)</div>
+              <div class="meta">Material será liberado após a aula</div>
+            </div>
+            <a class="btn ghost" href="#" onclick="return false;">Em breve</a>
+          </div>
+        </div>
+
+        <div class="note">
+          📌 Quando o PDF estiver pronto, troque “Em breve” por “Abrir PDF”.
+        </div>
+      </div>
+
+      <!-- ⭐ DESTAQUE -->
+      <div class="panel active" id="panel-destaque" data-panel="destaque">
+        <div class="row" style="justify-content:space-between">
+          <div class="status" id="destaqueStatus">Carregando o destaque…</div>
+          <button class="btn primary" id="btnEditarDestaque" type="button" title="Editar (professor)">
+            ✏️ Editar
+          </button>
+        </div>
+
+        <div style="height:10px"></div>
+
+        <div class="article" id="destaqueView">
+          <h2>Destaque da Semana</h2>
+          <p>Carregando…</p>
+        </div>
+
+        <div class="note">
+          👨‍🏫 Professor: clique em <b>Editar</b>, digite a senha e atualize o artigo sem mexer no código.<br>
+          🖼️ Imagens: você pode colar prints ou inserir imagens por link.
+        </div>
+      </div>
+
+      <div class="panel" id="panel-avisos" data-panel="avisos">
+        <div class="note" style="margin-top:0">
+          📌 <strong>Recado da semana:</strong><br>
+          - Atividade disponível até <strong>sexta-feira</strong>.<br>
+          - Dúvidas: mande no grupo.<br><br>
+          ✅ Antes de dizer “perdi o link”, confira esta página 😄
+        </div>
+      </div>
+
+    </section>
+
+    <footer>
+      Instituto ALFA • Área do Aluno — <span class="muted">Formando vencedores!</span>
+    </footer>
+
+  </div>
+
+  <!-- Modal Editor -->
+  <div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-label="Editor do Destaque">
+      <div class="modal-hd">
+        <strong>Editar Destaque da Semana</strong>
+        <button class="btn danger" id="btnFecharModal" type="button">Fechar</button>
+      </div>
+      <div class="modal-bd">
+        <div class="row">
+          <input id="pass" type="password" placeholder="Senha do professor" />
+          <button class="btn primary" id="btnSalvarDestaque" type="button">💾 Salvar</button>
+          <span class="status" id="saveStatus">—</span>
+        </div>
+        <div style="height:12px"></div>
+        <div id="editor"></div>
+        <div class="note">
+          ⚠️ Evite colar imagens gigantes (pode ficar pesado). Se preferir, use imagem por link.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.min.js"></script>
+  <script>
+    // ✅ URL do Web App do Apps Script:
+    const DESTAQUE_API = "https://script.google.com/macros/s/AKfycbxxUkPoPIJ0YMd6C9W-lW-A17kqTWgapFud-dgX627s86h2e8EImepvjAu-9LUBUic3SQ/exec";
+
+    const tabs = Array.from(document.querySelectorAll('.tab'));
+    const panels = Array.from(document.querySelectorAll('.panel'));
+    const headers = Array.from(document.querySelectorAll('.hd'));
+    const q = document.getElementById('q');
+
+    function norm(s){
+      return (s||"")
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .trim();
+    }
+
+    function setActive(tabName){
+      tabs.forEach(t=>{
+        const active = t.dataset.tab === tabName;
+        t.classList.toggle('active', active);
+        t.setAttribute('aria-selected', active ? 'true' : 'false');
+      });
+
+      panels.forEach(p=>{
+        p.classList.toggle('active', p.dataset.panel === tabName);
+      });
+
+      headers.forEach(h=>{
+        h.style.display = (h.dataset.hd === tabName) ? '' : 'none';
+      });
+
+      q.value = "";
+      applyFilter();
+
+      if (tabName === "destaque") loadDestaque();
+    }
+
+    function applyFilter(){
+      const term = norm(q.value);
+      const activePanel = panels.find(p => p.classList.contains('active'));
+      if(!activePanel) return;
+
+      const items = Array.from(activePanel.querySelectorAll('.item'));
+      items.forEach(el=>{
+        const tags = norm(el.getAttribute('data-tags') || "");
+        const text = norm(el.innerText || "");
+        const ok = !term || tags.includes(term) || text.includes(term);
+        el.style.display = ok ? "" : "none";
+      });
+    }
+
+    tabs.forEach(t=> t.addEventListener('click', ()=> setActive(t.dataset.tab)));
+    q.addEventListener('input', applyFilter);
+    applyFilter();
+
+    // -------- Destaque da semana (viewer + editor) --------
+    const destaqueView = document.getElementById("destaqueView");
+    const destaqueStatus = document.getElementById("destaqueStatus");
+    const btnEditar = document.getElementById("btnEditarDestaque");
+
+    const backdrop = document.getElementById("modalBackdrop");
+    const btnFecharModal = document.getElementById("btnFecharModal");
+    const btnSalvar = document.getElementById("btnSalvarDestaque");
+    const pass = document.getElementById("pass");
+    const saveStatus = document.getElementById("saveStatus");
+
+    const quill = new Quill('#editor', {
+      theme: 'snow',
+      modules: {
+        toolbar: [
+          [{ header: [1, 2, 3, false] }],
+          ['bold', 'italic', 'underline', 'strike'],
+          [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+          [{ 'align': [] }],
+          ['link', 'image'],
+          ['clean']
+        ]
+      }
+    });
+
+    let lastLoadedHtml = "";
+
+    async function loadDestaque(){
+      try{
+        destaqueStatus.textContent = "Carregando o destaque…";
+        const url = DESTAQUE_API + "?action=get&ts=" + Date.now();
+        const res = await fetch(url, { method: "GET" });
+
+        // Se o browser bloquear por CORS, cai no catch
+        const data = await res.json();
+
+        if(!data.ok) throw new Error(data.error || "Falha ao carregar.");
+
+        lastLoadedHtml = data.html || "";
+        destaqueView.innerHTML = lastLoadedHtml || "<h2>Destaque da Semana</h2><p>Nenhum conteúdo ainda.</p>";
+        destaqueStatus.textContent = "✅ Destaque carregado.";
+      }catch(err){
+        destaqueStatus.textContent = "⚠️ Não foi possível carregar o destaque. Verifique a URL do Web App.";
+        console.error(err);
+      }
+    }
+
+    function openModal(){
+      quill.root.innerHTML = lastLoadedHtml || "<h2>Destaque da Semana</h2><p>Escreva aqui…</p>";
+      saveStatus.textContent = "—";
+      pass.value = "";
+      backdrop.classList.add("show");
+      backdrop.setAttribute("aria-hidden","false");
+      setTimeout(()=> pass.focus(), 50);
+    }
+
+    function closeModal(){
+      backdrop.classList.remove("show");
+      backdrop.setAttribute("aria-hidden","true");
+    }
+
+    btnEditar.addEventListener("click", openModal);
+    btnFecharModal.addEventListener("click", closeModal);
+    backdrop.addEventListener("click", (e)=>{ if(e.target === backdrop) closeModal(); });
+
+    btnSalvar.addEventListener("click", async ()=>{
+      try{
+        saveStatus.textContent = "Salvando…";
+        const html = quill.root.innerHTML;
+        const password = (pass.value || "").trim();
+
+        if (!password) {
+          saveStatus.textContent = "❌ Digite a senha.";
+          return;
+        }
+
+        const form = new URLSearchParams();
+        form.set("action", "save");
+        form.set("password", password);
+        form.set("html", html);
+
+        // ✅ No GitHub Pages, o navegador pode bloquear leitura da resposta (CORS).
+        // Então enviamos no-cors e confirmamos recarregando o conteúdo.
+        await fetch(DESTAQUE_API, {
+          method: "POST",
+          body: form,
+          mode: "no-cors"
+        });
+
+        saveStatus.textContent = "✅ Salvo! Atualizando…";
+        await loadDestaque();
+        saveStatus.textContent = "✅ Salvo com sucesso!";
+
+        setTimeout(closeModal, 600);
+      }catch(err){
+        saveStatus.textContent = "❌ Erro ao salvar. Tente novamente.";
+        console.error(err);
+      }
+    });
+
+    // ✅ FORÇA A ABRIR NO DESTAQUE AO INICIAR (mesmo se alguém mexer no HTML)
+    setActive("destaque");
+
+    // carrega 1x (extra — mantém seu comportamento)
+    loadDestaque();
+  </script>
+</body>
+</html>
