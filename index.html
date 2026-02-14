@@ -220,7 +220,6 @@
       </div>
 
       <div class="actions">
-        <!-- ✅ Turma -->
         <div class="pill" title="Selecionar Turma">
           👥 Turma:
           <select id="turmaSelect" aria-label="Selecionar turma">
@@ -246,7 +245,6 @@
         <div class="tab" data-tab="avisos" role="tab" aria-selected="false">📢 Avisos</div>
       </div>
 
-      <!-- HDs -->
       <div class="hd" data-hd="atividades" style="display:none">
         <h2>📝 Atividades da Semana</h2>
         <div class="row" style="justify-content:flex-end">
@@ -281,7 +279,6 @@
         <span class="tag">Recados</span>
       </div>
 
-      <!-- PAINÉIS -->
       <div class="panel" id="panel-atividades" data-panel="atividades">
         <div class="list" id="list-atividades"></div>
         <div class="note">
@@ -305,7 +302,6 @@
         </div>
       </div>
 
-      <!-- ⭐ DESTAQUE -->
       <div class="panel active" id="panel-destaque" data-panel="destaque">
         <div class="row" style="justify-content:space-between">
           <div class="status" id="destaqueStatus">Carregando o destaque…</div>
@@ -340,7 +336,6 @@
     </footer>
   </div>
 
-  <!-- Modal do Destaque -->
   <div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">
     <div class="modal" role="dialog" aria-modal="true" aria-label="Editor do Destaque">
       <div class="modal-hd">
@@ -362,7 +357,6 @@
     </div>
   </div>
 
-  <!-- Modal Gerenciar Listas -->
   <div class="modal-backdrop" id="listBackdrop" aria-hidden="true">
     <div class="modal" role="dialog" aria-modal="true" aria-label="Gerenciar itens">
       <div class="modal-hd">
@@ -453,18 +447,17 @@
     }
 
     function setTurma(t){
-      const tt = (t || "A").toUpperCase();
+      const tt = (t || "A").toUpperCase() === "B" ? "B" : "A";
       localStorage.setItem("ALFA_TURMA", tt);
       setUrlParam("turma", tt);
       turmaSelect.value = tt;
+
       tagTurmaAtv.textContent  = "Turma " + tt;
       tagTurmaPdf.textContent  = "Turma " + tt;
       tagTurmaProx.textContent = "Turma " + tt;
 
-      // re-render
-      renderList("atividades", cache.atividades);
-      renderList("pdfs", cache.pdfs);
-      renderList("proximas", cache.proximas);
+      // ✅ agora recarrega do servidor com filtro da turma
+      loadAll().catch(console.error);
     }
 
     function setActive(tabName){
@@ -509,10 +502,10 @@
         .replaceAll("'","&#039;");
     }
 
+    // ✅ FRONT ainda filtra, mas agora é redundância (segurança extra)
     function itemMatchesTurma(it, turma){
       const v = String(it?.turma || "").trim().toUpperCase();
-      // ✅ Sem turma definida => aparece em ambas (útil para “GERAL”)
-      if (!v) return true;
+      if (!v) return false; // 🔒 vazio não aparece mais
       if (v === "GERAL" || v === "TODAS") return true;
       return v === turma;
     }
@@ -561,7 +554,9 @@
     }
 
     async function loadAll(){
-      const url = API + "?action=getAll&ts=" + Date.now();
+      const turma = getTurma();
+      const url = API + "?action=getAll&turma=" + encodeURIComponent(turma) + "&ts=" + Date.now();
+
       const res = await fetch(url, { method:"GET" });
       const data = await res.json();
       if(!data.ok) throw new Error(data.error || "Falha ao carregar.");
@@ -786,12 +781,10 @@
       }
     });
 
-    // ✅ Inicialização de turma
     turmaSelect.value = getTurma();
     setTurma(getTurma());
     turmaSelect.addEventListener("change", ()=> setTurma(turmaSelect.value));
 
-    // ✅ inicia no Destaque
     setActive("destaque");
     applyFilter();
 
